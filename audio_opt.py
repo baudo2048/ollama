@@ -1,3 +1,4 @@
+import os
 import sys
 import speech_recognition as sr
 
@@ -45,6 +46,11 @@ def ascolto_continuo():
             except KeyboardInterrupt:
                 print("\nInterrotto dall'utente.", file=sys.stderr)
                 break
+            except BrokenPipeError:
+                # La pipe è stata chiusa dall'altro script (executor.py), usciamo in modo pulito
+                devnull = os.open(os.devnull, os.O_WRONLY)
+                os.dup2(devnull, sys.stdout.fileno())
+                sys.exit(0)
 
 if __name__ == "__main__":
     ascolto_continuo()

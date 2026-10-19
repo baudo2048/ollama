@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 def elabora_testo(testo):
-    testo_raccolto = []
+    testo_processato = ""
     
     try:
         comando = ["ollama", "run", "myterminal"]
@@ -25,13 +25,7 @@ def elabora_testo(testo):
         processo.stdin.flush()
         processo.stdin.close()
         
-        print("🤖 Risposta in tempo reale:", file=sys.stderr)
-        
-        # Leggiamo l'output riga per riga man mano che Ollama lo produce
-        for line in processo.stdout:
-            # Stampiamo direttamente su sys.stderr (o stdout) per vederlo subito a schermo
-            print(line, end='', flush=True)
-            testo_raccolto.append(line)
+        testo_processato = processo.stdout.read()
             
         # Attendiamo la chiusura del processo
         processo.wait()
@@ -47,6 +41,4 @@ def elabora_testo(testo):
     except Exception as e:
         print(f"\n❌ Errore imprevisto: {e}", file=sys.stderr)
         
-    # Uniamo tutte le righe raccolte per il ritorno della funzione
-    testo_processato = "".join(testo_raccolto).strip()
-    return f"Elaborato: {testo_processato}"
+    return testo_processato.strip()
